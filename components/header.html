@@ -1,0 +1,58 @@
+<header class="navbar" id="navbar" >
+  <a class="navbar__logo" href="/">Bet Aréna</a>
+
+  <span class="balance balance--bar" id="balance-bar" aria-label="Zůstatek" hidden></span>
+
+  <button class="navbar__toggle" id="navbar-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navbar-menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+
+  <div class="navbar__menu" id="navbar-menu">
+    <nav aria-label="Hlavní navigace" style="display:contents">
+      <ul class="navbar__links">
+        <li><a class="navbar__link" href="/casino/">Kasino</a></li>
+        <li><a class="navbar__link" href="/tournaments">Turnaje</a></li>
+        <li><a class="navbar__link" href="/bonuses">Bonusy</a></li>
+      </ul>
+    </nav>
+
+<!-- Nepřihlášený uživatel -->
+<div class="navbar__actions navbar__actions--guest" hidden>
+  <a class="btn" href="/auth/login">Přihlásit se</a>
+  <a class="btn btn--primary" href="/auth/register">Registrovat se</a>
+</div>
+
+<!-- Přihlášený uživatel -->
+<div class="navbar__actions navbar__actions--user" hidden>
+  <span class="balance balance--menu" id="balance-menu" aria-label="Zůstatek" hidden></span>
+  <a class="btn btn--primary" href="/wallet/deposit">Vklad</a>
+
+  <div class="account" id="account">
+    <button class="account__toggle" id="account-toggle" type="button" aria-expanded="false" aria-controls="account-menu">
+      <span class="account__avatar" id="account-avatar" aria-hidden="true"></span>
+      <span class="account__name" id="account-name">Můj účet</span>
+      <span class="account__chevron" aria-hidden="true">▾</span>
+    </button>
+    <ul class="account__menu" id="account-menu">
+      <li class="account__who">
+        <span class="account__who-name" id="account-who-name"></span>
+        <span class="account__who-email" id="account-who-email"></span>
+      </li>
+      <li><a class="account__item" href="/account/">Přehled účtu</a></li>
+      <li><a class="account__item" href="/account/profile">Osobní údaje</a></li>
+      <li><a class="account__item" href="/account/kyc">Verifikace účtu</a></li>
+      <li class="account__sep" role="separator"></li>
+	  <li><a class="account__item" href="/wallet/">Peněženka</a></li>
+	  <li><a class="account__item" href="/transaction/">Transakce</a></li>
+      <li class="account__sep" role="separator"></li>
+      <li><a class="account__item" href="/account/tournaments">Moje turnaje</a></li>
+      <li><a class="account__item" href="/account/bonuses">Moje bonusy</a></li>
+      <li class="account__sep" role="separator"></li>
+      <li><a class="account__item" href="/account/settings">Nastavení</a></li>
+      <li><a class="account__item account__item--muted" href="/auth/logout">Odhlásit se</a></li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+</header>

@@ -1,0 +1,761 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=Manrope:wght@400;600&display=swap');
+
+.wallet-balances {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    padding: 0 24px 24px;
+}
+
+.wallet-balance-card {
+    padding: 24px;
+    border: 1px solid #26352D;
+    border-radius: 12px;
+    background: #0D1411;
+}
+
+.wallet-balance-label {
+    margin: 0 0 12px;
+    color: #9DB0A5;
+    font-size: 14px;
+}
+
+.wallet-balance-value {
+    margin: 0;
+    font: 700 32px/1.2 Sora, sans-serif;
+    font-variant-numeric: tabular-nums;
+}
+
+.wallet-balance-bonus {
+    color: #C8F135;
+}
+
+.wallet-demo-note {
+    margin: 0;
+    padding: 0 24px 20px;
+    color: #9DB0A5;
+    font-size: 13px;
+}
+
+.wallet-deposit {
+    color: #C8F135;
+}
+
+.wallet-withdraw {
+    color: #FFB547;
+}
+
+@media (max-width: 640px) {
+    .wallet-main {
+        padding: 24px 16px;
+    }
+
+    .wallet-balances {
+        grid-template-columns: 1fr;
+    }
+
+    .wallet-balance-value {
+        font-size: 28px;
+    }
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.wallet-page {
+    min-height: 800px;
+    background: #0D1411;
+    color: #EEF3EF;
+    font-family: Manrope, sans-serif;
+}
+
+.wallet-main {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px;
+    box-sizing: border-box;
+}
+
+.wallet-header {
+    margin-bottom: 28px;
+}
+
+.wallet-breadcrumb {
+    font-size: 13px;
+    letter-spacing: .08em;
+    color: #C8F135;
+}
+
+.wallet-title {
+    margin: 8px 0 0;
+    font: 700 40px/1.1 Sora, sans-serif;
+}
+
+.wallet-subtitle {
+    margin: 12px 0px 0px;
+    font-size: 17px;
+    color: rgb(157, 176, 165);
+}
+
+.wallet-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.wallet-filter-active {
+    background: rgb(200, 241, 53);
+    color: rgb(13, 20, 17);
+    border: 1px solid rgb(200, 241, 53);
+}
+
+.wallet-tournaments {
+    border: 1px solid rgb(38, 53, 45);
+    border-radius: 16px;
+    background: rgb(22, 32, 27);
+    overflow: hidden;
+}
+
+.wallet-tournaments-title {
+    padding: 20px 24px;
+    font: 700 20px Sora, sans-serif;
+}
+
+.wallet-tournament-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-top: 1px solid rgb(38, 53, 45);
+}
+
+.wallet-tournament-info {
+    flex: 1 1 240px;
+}
+
+.wallet-tournament-name {
+    font: 600 17px Manrope, sans-serif;
+}
+
+.wallet-tournament-dates {
+    font-size: 14px;
+    color: rgb(157, 176, 165);
+    margin-top: 4px;
+}
+
+.wallet-tournament-position {
+    flex: 0 0 120px;
+    font-size: 14px;
+    color: rgb(157, 176, 165);
+}
+
+.wallet-tournament-reward {
+    flex: 0 0 140px;
+    font: 600 15px Manrope, sans-serif;
+}
+
+.wallet-tournament-status-active,
+.wallet-tournament-status-upcoming,
+.wallet-tournament-status-ended {
+    padding: 4px 10px;
+    border-radius: 6px;
+    color: rgb(13, 20, 17);
+    font: 600 12px Manrope, sans-serif;
+}
+
+.wallet-tournament-status-active {
+    background: rgb(200, 241, 53);
+}
+
+.wallet-tournament-status-upcoming {
+    background: rgb(255, 181, 71);
+}
+
+.wallet-tournament-status-ended {
+    background: rgb(157, 176, 165);
+}
+
+.mb-2 {
+    margin-bottom: 24px;
+}
+
+.wallet-filter {
+    padding: 12px 22px;
+    border-radius: 999px;
+    font: 600 15px Manrope, sans-serif;
+    border: 1px solid rgb(38, 53, 45);
+    display: inline-block;
+}
+
+.wallet-methods {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding: 0 24px 24px;
+}
+
+.wallet-method {
+    padding: 24px;
+    border: 1px solid #26352D;
+    border-radius: 12px;
+    background: #0D1411;
+}
+
+.wallet-method-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    height: 40px;
+    margin-bottom: 16px;
+    padding: 0 8px;
+    border-radius: 8px;
+    background: #26352D;
+    color: #C8F135;
+    font: 700 13px Sora, sans-serif;
+}
+
+.wallet-method-title {
+    margin: 0 0 8px;
+    font: 700 17px Sora, sans-serif;
+}
+
+.wallet-method-description {
+    margin: 0 0 16px;
+    color: #9DB0A5;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.wallet-method-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #26352D;
+    color: #C8F135;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.wallet-method-note {
+    margin: 0;
+    padding: 0 24px 20px;
+    color: #9DB0A5;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+    .wallet-methods {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .wallet-main {
+        padding: 24px 16px;
+    }
+
+    .wallet-methods {
+        grid-template-columns: 1fr;
+    }
+}
+
+.wallet-saved-methods {
+    padding: 0 24px 24px;
+}
+
+.wallet-method-collapse {
+    margin-bottom: 12px;
+    border: 1px solid #26352D;
+    border-radius: 12px;
+    background: #0D1411;
+    overflow: hidden;
+}
+
+.wallet-method-collapse:last-child {
+    margin-bottom: 0;
+}
+
+.wallet-method-summary {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.wallet-method-summary::-webkit-details-marker {
+    display: none;
+}
+
+.wallet-method-summary::after {
+    content: '+';
+    margin-left: auto;
+    color: #C8F135;
+    font-size: 24px;
+}
+
+.wallet-method-collapse[open] > summary::after {
+    content: '−';
+}
+
+.wallet-method-summary .wallet-method-icon {
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.wallet-method-summary-text {
+    min-width: 0;
+}
+
+.wallet-method-summary-title {
+    display: block;
+    margin-bottom: 4px;
+    font: 700 17px Sora, sans-serif;
+}
+
+.wallet-method-summary-description {
+    color: #9DB0A5;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.wallet-deposit-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    padding: 20px;
+    border-top: 1px solid #26352D;
+}
+
+.wallet-deposit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.wallet-deposit-field input,
+.wallet-deposit-field select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 46px;
+    padding: 12px;
+    border: 1px solid #26352D;
+    border-radius: 8px;
+    background: #16201B;
+    color: #EEF3EF;
+    font: inherit;
+}
+
+.wallet-deposit-submit {
+    justify-self: start;
+    padding: 12px 22px;
+    border: 1px solid #C8F135;
+    border-radius: 8px;
+    background: #C8F135;
+    color: #0D1411;
+    font: 600 15px Manrope, sans-serif;
+    cursor: pointer;
+}
+
+.wallet-deposit-message {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: #9DB0A5;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.wallet-method-summary:focus-visible,
+.wallet-deposit-field input:focus-visible,
+.wallet-deposit-field select:focus-visible,
+.wallet-deposit-submit:focus-visible {
+    outline: 2px solid #C8F135;
+    outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+    .wallet-deposit-form {
+        grid-template-columns: 1fr;
+    }
+
+    .wallet-method-summary {
+        gap: 12px;
+        padding: 16px;
+    }
+}
+
+.wallet-new-method-fields {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    min-width: 0;
+    margin: 0 0 4px;
+    padding: 16px;
+    border: 1px solid #26352D;
+    border-radius: 8px;
+}
+
+.wallet-new-method-fields legend {
+    padding: 0 8px;
+    color: #C8F135;
+    font-weight: 600;
+}
+
+.wallet-save-method {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.wallet-save-method input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: #C8F135;
+}
+
+.wallet-save-method input:focus-visible {
+    outline: 2px solid #C8F135;
+    outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+    .wallet-new-method-fields {
+        grid-template-columns: 1fr;
+    }
+}
+
+.wallet-balance-hint {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: #9DB0A5;
+    font-size: 13px;
+}
+
+.wallet-balance-hint strong {
+    color: #C8F135;
+    font-variant-numeric: tabular-nums;
+}
+
+.wallet-section-note {
+    margin: 0;
+    padding: 0 24px 20px;
+    color: #9DB0A5;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.wallet-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.wallet-btn-secondary,
+.wallet-btn-danger {
+    padding: 12px 22px;
+    border-radius: 8px;
+    background: transparent;
+    font: 600 15px Manrope, sans-serif;
+    cursor: pointer;
+}
+
+.wallet-btn-secondary {
+    border: 1px solid #26352D;
+    color: #EEF3EF;
+}
+
+.wallet-btn-danger {
+    border: 1px solid #FFB547;
+    color: #FFB547;
+}
+
+.wallet-btn-small {
+    padding: 6px 14px;
+    font-size: 13px;
+}
+
+.wallet-btn-secondary:focus-visible,
+.wallet-btn-danger:focus-visible {
+    outline: 2px solid #C8F135;
+    outline-offset: 3px;
+}
+
+.wallet-empty {
+    margin: 0;
+    padding: 8px 24px 28px;
+    color: #9DB0A5;
+    font-size: 14px;
+}
+
+.wallet-empty[hidden] {
+    display: none;
+}
+
+.wallet-history-scroll {
+    overflow-x: auto;
+}
+
+.wallet-history {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14px;
+}
+
+.wallet-history th,
+.wallet-history td {
+    padding: 16px 24px;
+    border-top: 1px solid #26352D;
+    white-space: nowrap;
+}
+
+.wallet-history th {
+    color: #9DB0A5;
+    font-weight: 600;
+}
+
+.wallet-history .wallet-amount {
+    text-align: right;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.wallet-deposit-amount {
+    color: #C8F135;
+}
+
+.wallet-withdraw-amount {
+    color: #FFB547;
+}
+
+body {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+}
+
+/*
+
+Nové třídy
+
+*/
+
+/* PAGE LAYOUT */
+
+.page-layout {
+    min-height: 800px;
+    background: #0D1411;
+    color: #EEF3EF;
+    font-family: Manrope, sans-serif;
+}
+
+.page-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px;
+    box-sizing: border-box;
+}
+
+/* PAGE HEADER */
+
+.page-header {
+    margin-bottom: 28px;
+}
+
+.page-breadcrumb {
+    font-size: 13px;
+    letter-spacing: .08em;
+    color: #C8F135;
+}
+
+.page-title {
+    margin: 8px 0 0;
+    font: 700 40px/1.1 Sora, sans-serif;
+}
+
+.page-subtitle {
+    margin: 12px 0 0;
+    font-size: 17px;
+    color: #9DB0A5;
+}
+
+/* SUBNAV */
+
+.page-subnav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.page-subnav-item {
+    padding: 12px 22px;
+    border-radius: 999px;
+    font: 600 15px Manrope, sans-serif;
+    border: 1px solid rgb(38, 53, 45);
+    display: inline-block;
+}
+
+.page-subnav-item.is-active {
+    background: rgb(200, 241, 53);
+    color: rgb(13, 20, 17);
+    border: 1px solid rgb(200, 241, 53);
+}
+
+/* SECTION */
+
+.page-section {
+    border: 1px solid rgb(38, 53, 45);
+    border-radius: 16px;
+    background: rgb(22, 32, 27);
+    overflow: hidden;
+}
+
+.page-section-title {
+    padding: 20px 24px;
+    font: 700 20px Sora, sans-serif;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 640px) {
+
+    .page-content {
+        padding: 24px 16px;
+    }
+
+}
+/* Footer */
+.footer,
+.footer * {
+    box-sizing: border-box;
+}
+
+.footer {
+    background: #0D1411;
+    border-top: 1px solid #26352D;
+    color: #EEF3EF;
+}
+
+.footer a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.footer a:focus-visible {
+    outline: 2px solid #C8F135;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.footer__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 48px 24px;
+}
+
+.footer__top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 48px;
+}
+
+.footer__brand {
+    flex: 1 1 240px;
+    max-width: 320px;
+}
+
+.footer__logo {
+    color: #C8F135;
+    font: 700 24px "Sora", sans-serif;
+}
+
+.footer__tagline {
+    margin: 12px 0 0;
+    color: #9DB0A5;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 150px;
+}
+
+.footer__title {
+    margin: 0 0 8px;
+    color: #EEF3EF;
+    font: 700 15px "Sora", sans-serif;
+}
+
+.footer__link {
+    display: inline-block;
+    padding: 6px 0;
+    color: #9DB0A5;
+    font-size: 15px;
+}
+
+.footer__link:hover,
+.footer__link[aria-current="page"] {
+    color: #C8F135;
+}
+
+.footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid #26352D;
+    color: #9DB0A5;
+    font-size: 14px;
+}
+
+.footer__age {
+    padding: 4px 10px;
+    border: 1px solid #26352D;
+    border-radius: 6px;
+    color: #9DB0A5;
+    font: 600 12px "Manrope", sans-serif;
+}
+
+@media (max-width: 860px) {
+    .footer__inner {
+        padding: 32px 20px 20px;
+    }
+
+    .footer__brand {
+        flex-basis: 100%;
+        max-width: none;
+    }
+
+    .footer__col {
+        flex: 1 1 150px;
+    }
+}
