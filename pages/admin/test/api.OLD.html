@@ -1,0 +1,239 @@
+<style>
+  #menu { max-height: calc(100vh - 110px); overflow-y: auto; }
+  #menu .group { font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; }
+  #menu button { font-size: .85rem; }
+  .m { display: inline-block; width: 3.6rem; text-align: center; font-size: .7rem; font-weight: 700; }
+  pre { white-space: pre-wrap; word-break: break-word; max-height: 55vh; overflow: auto; }
+</style>
+
+<nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+  <div class="container-fluid gap-3">
+    <span class="navbar-brand mb-0 h1">BET ARENA &middot; API tester</span>
+    <div class="input-group input-group-sm w-auto flex-grow-1" style="max-width:520px">
+      <span class="input-group-text">Base URL</span>
+      <input id="base" class="form-control" placeholder="empty = same origin, e.g. http://localhost/minetdesk">
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid py-3">
+  <div class="row g-3">
+    <div class="col-lg-4 col-xl-3">
+      <div id="menu" class="card card-body p-2"></div>
+    </div>
+    <div class="col-lg-8 col-xl-9">
+      <div class="card mb-3">
+        <div class="card-body">
+          <div id="title" class="text-secondary">Select an endpoint on the left.</div>
+          <form id="form" class="mt-3" autocomplete="off" hidden>
+            <div id="fields" class="row g-2"></div>
+            <button class="btn btn-primary btn-sm mt-3" type="submit">Send request</button>
+          </form>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <span>Response</span><span id="status" class="badge text-bg-secondary">-</span><small id="time" class="text-secondary"></small>
+        </div>
+        <div class="card-body">
+          <div class="small text-secondary mb-1">Request</div>
+          <pre id="req" class="bg-body-secondary rounded p-2 small">-</pre>
+          <div class="small text-secondary mb-1">Body</div>
+          <pre id="res" class="bg-body-secondary rounded p-2 small mb-0">-</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  Endpoint definitions mirror SITEMAP.md (section API).
+  item: [method, file, access, description, fields]
+  field: name:type(opt1|opt2)*   (* = required; types: text, number, password, date, select, bool, file)
+  access: public | guest | user | admin
+*/
+const GROUPS = [
+  { name: 'Wallet', dir: 'wallet', items: [
+    ['GET', 'wallets.php', 'user', 'List wallets of the logged-in user', []],
+    ['GET', 'wallet.php', 'user', 'Wallet detail', ['wallet_id:number*']],
+    ['POST', 'wallet.php', 'user', 'Create wallet (duplicate currency check)', ['currency:select(CZK|EUR|BSC)*']],
+    ['PUT', 'wallet.php', 'user', 'Update wallet', ['wallet_id:number*', 'currency:select(CZK|EUR|BSC)*']],
+    ['DELETE', 'wallet.php', 'user', 'Delete wallet', ['wallet_id:number*']],
+    ['POST', 'deposit.php', 'user', 'Deposit by currency', ['currency:select(CZK|EUR|BSC)*', 'amount:number*']],
+    ['POST', 'withdraw.php', 'user', 'Withdraw by currency (balance check)', ['currency:select(CZK|EUR|BSC)*', 'amount:number*']]
+  ]},
+  { name: 'Auth', dir: 'auth', items: [
+    ['POST', 'login.php', 'guest', 'Log in', ['email:text*', 'password:password*']],
+    ['POST', 'register.php', 'guest', 'Register', ['email:text*', 'password:password*', 'password_confirm:password*']],
+    ['POST', 'logout.php', 'user', 'Log out', []],
+    ['POST', 'forgot-password.php', 'public', 'Request password reset e-mail', ['email:text*']],
+    ['POST', 'reset-password.php', 'public', 'Set new password by token', ['token:text*', 'password:password*', 'password_confirm:password*']],
+    ['GET', 'verify.php', 'public', 'Verify e-mail by token', ['token:text*']]
+  ]},
+  { name: 'Account', dir: 'account', items: [
+    ['GET', 'account.php', 'user', 'Account overview', []],
+    ['GET', 'profile.php', 'user', 'Get personal data', []],
+    ['PUT', 'profile.php', 'user', 'Update personal data', ['first_name:text', 'last_name:text', 'birth_date:date', 'phone:text', 'address:text']],
+    ['GET', 'kyc.php', 'user', 'KYC status and documents', []],
+    ['POST', 'kyc.php', 'user', 'Upload KYC document', ['document_type:text*', 'file:file*']],
+    ['GET', 'settings.php', 'user', 'Get account settings', []],
+    ['PUT', 'settings.php', 'user', 'Update account settings', ['language:text', 'notifications:bool']],
+    ['PUT', 'password.php', 'user', 'Change password', ['current_password:password*', 'password:password*', 'password_confirm:password*']],
+    ['GET', 'tournaments.php', 'user', 'Tournaments of the user', ['page:number', 'limit:number']],
+    ['GET', 'bonuses.php', 'user', 'Bonuses of the user', ['status:text', 'page:number', 'limit:number']]
+  ]},
+  { name: 'Casino', dir: 'casino', items: [
+    ['GET', 'games.php', 'public', 'List games (favorites = user only)', ['filter:select(popular|favorites|all|provider)', 'provider:text', 'page:number', 'limit:number']],
+    ['GET', 'game.php', 'public', 'Game detail', ['game_id:number*']],
+    ['GET', 'providers.php', 'public', 'List game providers', []],
+    ['GET', 'favorites.php', 'user', 'List favorite games', ['page:number', 'limit:number']],
+    ['POST', 'favorite.php', 'user', 'Add game to favorites', ['game_id:number*']],
+    ['DELETE', 'favorite.php', 'user', 'Remove game from favorites', ['game_id:number*']]
+  ]},
+  { name: 'Transaction', dir: 'transaction', items: [
+    ['GET', 'transactions.php', 'user', 'Transaction history with filter', ['type:select(deposit|withdraw|bet|win|bonus)', 'currency:select(CZK|EUR|BSC)', 'wallet_id:number', 'from:date', 'to:date', 'page:number', 'limit:number']],
+    ['GET', 'transaction.php', 'user', 'Transaction detail', ['transaction_id:number*']]
+  ]},
+  { name: 'Bonus', dir: 'bonus', items: [
+    ['GET', 'bonuses.php', 'public', 'List available bonuses', ['page:number', 'limit:number']],
+    ['GET', 'bonus.php', 'public', 'Bonus detail and conditions', ['bonus_id:number*']],
+    ['POST', 'claim.php', 'user', 'Activate bonus', ['bonus_id:number*']]
+  ]},
+  { name: 'Tournament', dir: 'tournament', items: [
+    ['GET', 'tournaments.php', 'public', 'List tournaments by status', ['status:select(active|upcoming|finished)', 'page:number', 'limit:number']],
+    ['GET', 'tournament.php', 'public', 'Tournament detail', ['tournament_id:number*']],
+    ['GET', 'leaderboard.php', 'public', 'Tournament leaderboard', ['tournament_id:number*', 'limit:number']],
+    ['POST', 'join.php', 'user', 'Join tournament', ['tournament_id:number*']]
+  ]},
+  { name: 'Admin', dir: 'admin', items: [
+    ['GET', 'dashboard.php', 'admin', 'Dashboard data', []]
+  ]}
+];
+
+const ACCESS = { public: ['Public', 'secondary'], guest: ['Guest only', 'info'], user: ['Logged in', 'primary'], admin: ['Admin', 'danger'] };
+const COLORS = { GET: 'success', POST: 'primary', PUT: 'warning', DELETE: 'danger' };
+const $ = (s) => document.querySelector(s);
+let current = null;
+
+function parseField(s) {
+  const m = s.match(/^(\w+):(\w+)(?:\(([^)]*)\))?(\*)?$/);
+  return { n: m[1], t: m[2], o: m[3] ? m[3].split('|') : null, r: !!m[4] };
+}
+
+function buildMenu() {
+  const menu = $('#menu');
+  GROUPS.forEach((g, gi) => {
+    const h = document.createElement('div');
+    h.className = 'group text-secondary fw-bold px-2 pt-2 pb-1';
+    h.textContent = g.name + '  /api/' + g.dir + '/';
+    menu.appendChild(h);
+    g.items.forEach((it, ii) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn btn-light text-start w-100 mb-1 py-1';
+      b.dataset.id = gi + '-' + ii;
+      b.innerHTML = '<span class="m badge text-bg-' + COLORS[it[0]] + ' me-2">' + it[0] + '</span>';
+      b.append(it[1]);
+      b.onclick = () => select(gi, ii);
+      menu.appendChild(b);
+    });
+  });
+}
+
+function select(gi, ii) {
+  const g = GROUPS[gi], it = g.items[ii];
+  current = { g, it, fields: it[4].map(parseField) };
+  document.querySelectorAll('#menu button').forEach((b) => b.classList.toggle('active', b.dataset.id === gi + '-' + ii));
+  const [al, ac] = ACCESS[it[2]];
+  $('#title').innerHTML = '';
+  const t = $('#title');
+  t.className = '';
+  t.innerHTML = '<span class="badge text-bg-' + COLORS[it[0]] + ' me-2">' + it[0] + '</span><code>/api/' + g.dir + '/' + it[1] + '</code> <span class="badge text-bg-' + ac + ' ms-2">' + al + '</span><div class="text-secondary small mt-1"></div>';
+  t.lastChild.textContent = it[3];
+  const box = $('#fields');
+  box.innerHTML = '';
+  current.fields.forEach((f) => {
+    const col = document.createElement('div');
+    col.className = 'col-md-6';
+    const label = document.createElement('label');
+    label.className = 'form-label small mb-1';
+    label.textContent = f.n + (f.r ? ' *' : '') + (it[0] === 'GET' ? ' (query)' : '');
+    label.htmlFor = 'f_' + f.n;
+    let el;
+    if (f.t === 'select' || f.t === 'bool') {
+      el = document.createElement('select');
+      el.className = 'form-select form-select-sm';
+      (f.t === 'bool' ? ['true', 'false'] : f.o).forEach((o) => el.add(new Option(o, o)));
+      el.insertBefore(new Option('-', ''), el.firstChild);
+      el.value = '';
+    } else {
+      el = document.createElement('input');
+      el.className = 'form-control form-control-sm';
+      el.type = { number: 'number', password: 'password', date: 'date', file: 'file' }[f.t] || 'text';
+      if (f.t === 'number') el.step = 'any';
+    }
+    el.id = 'f_' + f.n;
+    col.append(label, el);
+    box.appendChild(col);
+  });
+  $('#form').hidden = false;
+}
+
+$('#form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const { g, it, fields } = current;
+  const base = $('#base').value.trim().replace(/\/$/, '');
+  let url = base + '/api/' + g.dir + '/' + it[1];
+  const vals = {};
+  let file = null;
+  fields.forEach((f) => {
+    const el = $('#f_' + f.n);
+    if (f.t === 'file') { if (el.files[0]) file = [f.n, el.files[0]]; return; }
+    if (el.value === '') return;
+    vals[f.n] = f.t === 'number' ? Number(el.value) : f.t === 'bool' ? el.value === 'true' : el.value;
+  });
+  const opts = { method: it[0], credentials: 'include', headers: { Accept: 'application/json' } };
+  let preview = '';
+  if (it[0] === 'GET') {
+    const q = new URLSearchParams(vals).toString();
+    if (q) url += '?' + q;
+  } else if (file) {
+    const fd = new FormData();
+    Object.entries(vals).forEach(([k, v]) => fd.append(k, v));
+    fd.append(file[0], file[1]);
+    opts.body = fd;
+    preview = '\n[multipart/form-data] ' + Object.keys(vals).concat(file[0]).join(', ');
+  } else {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(vals);
+    preview = '\n' + JSON.stringify(vals, null, 2);
+  }
+  $('#req').textContent = it[0] + ' ' + url + preview;
+  $('#res').textContent = '...';
+  const st = $('#status');
+  st.className = 'badge text-bg-secondary';
+  st.textContent = '...';
+  const t0 = performance.now();
+  try {
+    const r = await fetch(url, opts);
+    const txt = await r.text();
+    let out = txt, ok = r.ok;
+    try {
+      const j = JSON.parse(txt);
+      out = JSON.stringify(j, null, 2);
+      if (typeof j.success === 'boolean') ok = ok && j.success;
+    } catch (_) { out = txt || '(empty response)'; ok = false; }
+    st.className = 'badge text-bg-' + (ok ? 'success' : 'danger');
+    st.textContent = r.status + ' ' + r.statusText;
+    $('#res').textContent = out;
+  } catch (err) {
+    st.className = 'badge text-bg-danger';
+    st.textContent = 'Network error';
+    $('#res').textContent = String(err);
+  }
+  $('#time').textContent = Math.round(performance.now() - t0) + ' ms';
+});
+
+buildMenu();
+</script>

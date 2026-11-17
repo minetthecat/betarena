@@ -1,0 +1,37 @@
+<x-dc>
+	<div class="wallet-page">
+		<main class="wallet-main">
+
+			<!-- HERO -->
+			<div class="wallet-header">
+				<div class="wallet-breadcrumb">Administrace · /admin/</div>
+				<h1 class="wallet-title">Administrace</h1>
+				<p class="wallet-subtitle" data-dc-tpl="8">Administrační rozhraní k obsluze aplikace.</p>
+			</div>
+
+			<!-- SUBNAV -->
+			<div data-dc-tpl="8" class="wallet-filters">
+				<a data-dc-tpl="9" href="/admin/">
+					<span data-dc-tpl="10" class="wallet-filter wallet-filter-active">Nástěnka</span>
+				</a>
+				<a data-dc-tpl="11" href="/admin/test">
+					<span data-dc-tpl="12" class="wallet-filter">Testování</span>
+				</a>
+			</div>
+
+			<!-- CONTENT -->
+			<!-- SECTION: News -->
+			<section data-dc-tpl="14" class="wallet-tournaments mb-2">
+				<div data-dc-tpl="15" class="wallet-tournaments-title">Novinky</div>
+			</section>
+
+		</main>
+	</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1000}}'>
+class Component extends DCLogic {
+	renderVals() {
+		return {};
+	}
+}
+</script>

@@ -1,0 +1,90 @@
+
+        <div class="wallet-page">
+            <main class="wallet-main">
+
+                <!-- TITLE -->
+                <div class="wallet-header">
+                    <div class="wallet-breadcrumb">Peněženka · /wallet/wait/</div>
+                    <h1 class="wallet-title">Čeká na schválení</h1>
+                    <p class="wallet-subtitle" data-dc-tpl="8">Výběry, které čekají na schválení. Žádost můžete do schválení zrušit.</p>
+                </div>
+
+                <!-- SUBNAV -->
+                <div data-dc-tpl="9" class="wallet-filters">
+                    <a href="/wallet/">
+                        <span data-dc-tpl="10" class="wallet-filter">Přehled</span>
+                    </a>
+                    <a href="/wallet/deposit">
+                        <span data-dc-tpl="11" class="wallet-filter">Vklad</span>
+                    </a>
+                    <a href="/wallet/withdraw">
+                        <span data-dc-tpl="12" class="wallet-filter">Výběr</span>
+                    </a>
+                    <a href="/wallet/wait">
+                        <span data-dc-tpl="12" class="wallet-filter wallet-filter-active">Čeká na schválení</span>
+                    </a>
+                    <a href="/wallet/method">
+                        <span data-dc-tpl="13" class="wallet-filter">Platební metody</span>
+                    </a>
+                </div>
+
+                <!-- CONTENT -->
+                <!-- SECTION: Waiting -->
+                <section data-dc-tpl="14" class="wallet-tournaments mb-2">
+                    <div data-dc-tpl="15" class="wallet-tournaments-title">Ve frontě <span id="wait-count" style="color:#9DB0A5;font:600 15px Manrope,sans-serif"></span></div>
+                    <div class="wallet-history-scroll" role="region" aria-label="Výběry čekající na schválení" tabindex="0">
+                        <table class="wallet-history">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Datum a čas</th>
+                                    <th scope="col">Typ</th>
+                                    <th scope="col">Platební metoda</th>
+                                    <th scope="col" class="wallet-amount">Částka</th>
+                                    <th scope="col">Stav</th>
+                                    <th scope="col">Akce</th>
+                                </tr>
+                            </thead>
+                            <tbody id="wait-body">
+                                <tr>
+                                    <td>15. 11. 2026, 12:20</td>
+                                    <td>Výběr</td>
+                                    <td>Bankovní převod</td>
+                                    <td class="wallet-amount wallet-withdraw-amount">−1 000,00 Kč</td>
+                                    <td><span class="wallet-tournament-status-upcoming">Čeká na schválení</span></td>
+                                    <td><button class="wallet-btn-danger wallet-btn-small" type="button" data-cancel>Zrušit žádost</button></td>
+                                </tr>
+                                <tr>
+                                    <td>15. 11. 2026, 10:05</td>
+                                    <td>Výběr</td>
+                                    <td>Platební karta</td>
+                                    <td class="wallet-amount wallet-withdraw-amount">−20,00 €</td>
+                                    <td><span class="wallet-tournament-status-upcoming">Čeká na schválení</span></td>
+                                    <td><button class="wallet-btn-danger wallet-btn-small" type="button" data-cancel>Zrušit žádost</button></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="wallet-empty" id="wait-empty" hidden>Nemáte žádný výběr čekající na schválení.</p>
+                    <p class="wallet-section-note">Zde se zobrazují pouze výběry čekající na schválení. Po schválení se přesunou do Historie transakcí v Přehledu. Ukázková data, stránka není napojená na API.</p>
+                </section>
+
+            </main>
+        </div>
+
+    <script>
+        function refreshQueue() {
+            var rows = document.querySelectorAll('#wait-body tr').length;
+            document.getElementById('wait-count').textContent = rows ? '(' + rows + ')' : '';
+            document.getElementById('wait-empty').hidden = rows > 0;
+            document.querySelector('.wallet-history-scroll').hidden = rows === 0;
+        }
+        document.addEventListener('click', function (event) {
+            var btn = event.target.closest('[data-cancel]');
+            if (!btn) return;
+            if (!window.confirm('Opravdu chcete zrušit tuto žádost o výběr?')) return;
+            btn.closest('tr').remove();
+            refreshQueue();
+        });
+        refreshQueue();
+    </script>

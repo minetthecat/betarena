@@ -1,0 +1,72 @@
+<div class="wallet-page">
+    <main class="wallet-main">
+
+        <!-- TITLE -->
+        <div class="wallet-header">
+            <div class="wallet-breadcrumb">Peněženka · /wallet/</div>
+            <h1 class="wallet-title">Peněženka</h1>
+            <p class="wallet-subtitle" data-dc-tpl="8">Krátký popis stránky..</p>
+        </div>
+
+        <!-- SUBNAV -->
+        <div data-dc-tpl="9" class="wallet-filters">
+            <a href="/wallet/">
+                <span data-dc-tpl="10" class="wallet-filter wallet-filter-active">Přehled</span>
+            </a>
+            <a href="/wallet/deposit">
+                <span data-dc-tpl="11" class="wallet-filter">Vklad</span>
+            </a>
+            <a href="/wallet/withdraw">
+                <span data-dc-tpl="12" class="wallet-filter">Výběr</span>
+            </a>
+            <a href="/wallet/wait">
+                <span data-dc-tpl="12" class="wallet-filter">Čeká na schválení</span>
+            </a>
+            <a href="/wallet/method">
+                <span data-dc-tpl="13" class="wallet-filter">Platební metody</span>
+            </a>
+        </div>
+
+        <!-- BALANCES -->
+        <section data-dc-tpl="14" class="wallet-tournaments mb-2" aria-labelledby="wallet-overview-title">
+            <div data-dc-tpl="15" class="wallet-tournaments-title" id="wallet-overview-title">Přehled</div>
+            <div class="wallet-balances" id="wallet-balances">
+                <div class="wallet-balance-card">
+                    <h2 class="wallet-balance-label">CZK peněženka</h2>
+                    <p class="wallet-balance-value" id="wallet-balance-czk">Načítám…</p>
+                </div>
+                <div class="wallet-balance-card">
+                    <h2 class="wallet-balance-label">BONUS peněženka</h2>
+                    <p class="wallet-balance-value wallet-balance-bonus" id="wallet-balance-bonus">Načítám…</p>
+                </div>
+            </div>
+            <p class="wallet-demo-note" id="wallet-balances-status" role="status" aria-live="polite" hidden></p>
+        </section>
+
+        <!-- TRANSACTION HISTORY -->
+        <section data-dc-tpl="14" class="wallet-tournaments" aria-labelledby="wallet-history-title">
+            <div data-dc-tpl="15" class="wallet-tournaments-title" id="wallet-history-title">
+                Historie transakcí
+            </div>
+            <div class="wallet-history-scroll" role="region" aria-label="Historie transakcí" tabindex="0">
+                <table class="wallet-history">
+                    <thead>
+                        <tr>
+                            <th scope="col">Datum a čas</th>
+                            <th scope="col">Typ</th>
+                            <th scope="col">Platební metoda</th>
+                            <th scope="col" class="wallet-amount">Částka</th>
+                        </tr>
+                    </thead>
+                    <tbody id="wallet-history-body">
+                        <tr><td colspan="4">Načítám…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script src="/services/api.js"></script>
+<script src="/services/wallet.js"></script>

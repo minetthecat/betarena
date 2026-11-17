@@ -1,0 +1,231 @@
+<div class="page-layout">
+    <main class="page-content">
+
+        <!-- HERO -->
+        <div class="page-header">
+            <div class="page-breadcrumb">Transakce · /transaction/</div>
+            <h1 class="page-title">Transakce</h1>
+            <p class="page-subtitle">Přehled vkladů, výběrů a ostatních pohybů na účtu.</p>
+        </div>
+
+        <!-- SUBNAV -->
+        <div data-dc-tpl="8" class="page-subnav" role="group" aria-label="Filtrovat transakce">
+            <button type="button" class="page-subnav-item is-active" data-transaction-filter="">
+                Vše
+            </button>
+            <button type="button" class="page-subnav-item" data-transaction-filter="deposit">
+                Vklady
+            </button>
+            <button type="button" class="page-subnav-item" data-transaction-filter="withdraw">
+                Výběry
+            </button>
+            <button type="button" class="page-subnav-item" data-transaction-filter="bet">
+                Sázky
+            </button>
+            <button type="button" class="page-subnav-item" data-transaction-filter="win">
+                Výhry
+            </button>
+            <button type="button" class="page-subnav-item" data-transaction-filter="bonus">
+                Bonusy
+            </button>
+        </div>
+
+        <!-- CONTENT -->
+        <section class="page-section mb-2" aria-labelledby="transactions-heading">
+            <div class="page-section-title" id="transactions-heading">Historie transakcí</div>
+            <div id="transactions-status" class="py-3" role="status" aria-live="polite">
+                Načítám transakce…
+            </div>
+
+            <div id="transactions-container" class="table-responsive" hidden>
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">Datum</th>
+                            <th scope="col">Typ</th>
+                            <th scope="col">Popis</th>
+                            <th scope="col" class="text-end">Částka</th>
+                            <th scope="col">Stav</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-list"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+
+<script>
+(function () {
+    'use strict';
+
+    const typeLabels = {
+        deposit: 'Vklad',
+        withdraw: 'Výběr',
+        bet: 'Sázka',
+        win: 'Výhra',
+        bonus: 'Bonus',
+        refund: 'Vrácení'
+    };
+
+    function formatDate(value) {
+        if (!value) return '—';
+
+        const date = new Date(String(value).replace(' ', 'T'));
+        if (Number.isNaN(date.getTime())) return String(value);
+
+        return new Intl.DateTimeFormat('cs-CZ', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }).format(date);
+    }
+
+    function formatAmount(value, currency) {
+        const amount = Number(value || 0);
+        const code = String(currency || 'CZK').toUpperCase();
+
+        if (!Number.isFinite(amount)) return '—';
+
+        try {
+            return new Intl.NumberFormat('cs-CZ', {
+                style: 'currency',
+                currency: code
+            }).format(amount);
+        } catch (error) {
+            return new Intl.NumberFormat('cs-CZ', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount) + ' ' + code;
+        }
+    }
+
+    function getRows(response) {
+        const data = response && response.data !== undefined
+            ? response.data
+            : response;
+
+        if (Array.isArray(data)) return data;
+        if (data && Array.isArray(data.transactions)) return data.transactions;
+        if (data && Array.isArray(data.items)) return data.items;
+
+        return [];
+    }
+
+    function addCell(row, text, className) {
+        const cell = document.createElement('td');
+        cell.textContent = text == null ? '' : String(text);
+        if (className) cell.className = className;
+        row.appendChild(cell);
+        return cell;
+    }
+
+    function describe(transaction) {
+        const type = String(transaction.type || '').toLowerCase();
+
+        if (type === 'deposit') return 'Připsání prostředků';
+        if (type === 'withdraw') return 'Výběr prostředků';
+        if (type === 'bet') return 'Sázka';
+        if (type === 'win') return 'Výhra';
+        if (type === 'bonus') return transaction.bonus_id ? 'Bonusový kredit' : 'Bonus';
+        if (type === 'refund') return 'Vrácení';
+        return transaction.description || 'Transakce';
+    }
+
+    function showMessage(message, className) {
+        const list = document.getElementById('transactions-list');
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+
+        cell.colSpan = 5;
+        cell.textContent = message;
+        if (className) cell.className = className;
+
+        row.appendChild(cell);
+        list.replaceChildren(row);
+    }
+
+    async function loadTransactions(type) {
+        const status = document.getElementById('transactions-status');
+        const container = document.getElementById('transactions-container');
+        const list = document.getElementById('transactions-list');
+
+        status.textContent = 'Načítám transakce…';
+        container.hidden = true;
+        list.replaceChildren();
+
+        try {
+            const params = { page: 1, limit: 100 };
+            if (type) params.type = type;
+
+            const response = await getTransactions(params);
+            const transactions = getRows(response);
+
+            if (!transactions.length) {
+                showMessage('Žádné transakce.');
+            } else {
+                transactions.forEach(function (transaction) {
+                    const row = document.createElement('tr');
+                    const typeKey = String(transaction.type || '').toLowerCase();
+                    const label = typeLabels[typeKey] || transaction.type || 'Transakce';
+
+                    addCell(row, formatDate(transaction.created_at));
+                    addCell(row, label);
+                    addCell(row, describe(transaction));
+
+                    const amount = Number(transaction.amount || 0);
+                    const outgoing = typeKey === 'withdraw' ||
+                        typeKey === 'bet' ||
+                        transaction.direction === 'out';
+                    const signedAmount = outgoing ? -Math.abs(amount) : Math.abs(amount);
+                    const amountText = (signedAmount > 0 ? '+' : '') +
+                        formatAmount(signedAmount, transaction.currency);
+
+                    addCell(
+                        row,
+                        amountText,
+                        'text-end ' + (signedAmount < 0 ? 'text-danger' : 'text-success')
+                    );
+                    addCell(row, transaction.status || 'Hotovo');
+
+                    list.appendChild(row);
+                });
+            }
+
+            status.textContent = '';
+            container.hidden = false;
+        } catch (error) {
+            console.error('Načtení transakcí selhalo:', error);
+            status.textContent = error && error.message
+                ? 'Transakce se nepodařilo načíst: ' + error.message
+                : 'Transakce se nepodařilo načíst.';
+            showMessage('Načtení transakcí selhalo.', 'text-danger');
+            container.hidden = false;
+        }
+    }
+
+    function init() {
+        document.querySelectorAll('[data-transaction-filter]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('[data-transaction-filter]').forEach(function (item) {
+                    item.classList.toggle('is-active', item === button);
+                });
+
+                loadTransactions(button.dataset.transactionFilter || '');
+            });
+        });
+
+        loadTransactions('');
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>

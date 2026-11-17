@@ -1,0 +1,14 @@
+<link rel="stylesheet" href="/services/auth.css">
+<section class="auth-card">
+  <div><div class="auth-url">/auth/register</div><h1 data-role="title">Registrace</h1></div>
+  <form data-auth="register" novalidate>
+    <div class="auth-field"><label for="auth-email">E-mail</label><input id="auth-email" name="email" required aria-describedby="auth-error-email" type="email" autocomplete="email" placeholder="jmeno@example.cz"><div class="auth-error" id="auth-error-email" data-error-for="email"></div></div>
+    <div class="auth-field"><label for="auth-password">Heslo</label><input id="auth-password" name="password" required aria-describedby="auth-error-password" type="password" autocomplete="new-password" placeholder="••••••••"><div class="auth-error" id="auth-error-password" data-error-for="password"></div></div>
+    <div class="auth-field"><label for="auth-password_confirm">Potvrzení hesla</label><input id="auth-password_confirm" name="password_confirm" required aria-describedby="auth-error-password_confirm" type="password" autocomplete="new-password" placeholder="••••••••"><div class="auth-error" id="auth-error-password_confirm" data-error-for="password_confirm"></div></div>
+    <div class="auth-field"><div class="auth-check"><input id="auth-terms" name="terms" type="checkbox" required aria-describedby="auth-error-terms"><label for="auth-terms">Je mi 18 let nebo více a souhlasím s <a href="/terms">obecnými podmínkami</a></label></div><div class="auth-error" id="auth-error-terms" data-error-for="terms"></div></div>
+    <div class="auth-msg" role="status" aria-live="polite" hidden></div>
+    <button class="auth-btn" type="submit">Vytvořit účet</button>
+  </form>
+  <div class="auth-foot">Už máš účet? <a href="/auth/login">Přihlásit se</a></div>
+</section>
+<script src="/services/auth.js?v=20261023-2" defer></script>

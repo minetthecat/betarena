@@ -1,0 +1,105 @@
+        <div class="wallet-page">
+            <main class="wallet-main">
+
+                <div class="wallet-header">
+                    <div class="wallet-breadcrumb">Peněženka · /wallet/deposit/</div>
+                    <h1 class="wallet-title">Vklad</h1>
+                    <p class="wallet-subtitle" data-dc-tpl="8">Krátký popis stránky..</p>
+                </div>
+
+                <div data-dc-tpl="9" class="wallet-filters">
+                    <a href="/wallet/"><span data-dc-tpl="10" class="wallet-filter">Přehled</span></a>
+                    <a href="/wallet/deposit"><span data-dc-tpl="11" class="wallet-filter wallet-filter-active">Vklad</span></a>
+                    <a href="/wallet/withdraw"><span data-dc-tpl="12" class="wallet-filter">Výběr</span></a>
+                    <a href="/wallet/wait"><span data-dc-tpl="12" class="wallet-filter">Čeká na schválení</span></a>
+                    <a href="/wallet/method"><span data-dc-tpl="13" class="wallet-filter">Platební metody</span></a>
+                </div>
+
+                <section data-dc-tpl="14" class="wallet-tournaments mb-2">
+                    <div data-dc-tpl="15" class="wallet-tournaments-title">Moje platební metody</div>
+                    <div class="wallet-saved-methods" id="saved-methods"><p class="wallet-empty">Načítám…</p></div>
+                </section>
+
+                <section data-dc-tpl="14" class="wallet-tournaments">
+                    <div data-dc-tpl="15" class="wallet-tournaments-title">Všechny platební metody</div>
+                    <div class="wallet-saved-methods">
+                        <details class="wallet-method-collapse">
+                            <summary class="wallet-method-summary">
+                                <span class="wallet-method-icon" aria-hidden="true">BANK</span>
+                                <span class="wallet-method-summary-text">
+                                    <span class="wallet-method-summary-title">Bankovní převod</span>
+                                    <span class="wallet-method-summary-description">Nový bankovní účet</span>
+                                </span>
+                            </summary>
+                            <form class="wallet-deposit-form" data-method="bank" data-new-method="true">
+                                <fieldset class="wallet-new-method-fields" style="grid-column:1 / -1; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; min-width:0; margin:0 0 4px; padding:16px; border:1px solid #26352D; border-radius:8px;">
+                                    <legend style="padding:0 8px; color:#C8F135; font-weight:600;">Údaje metody</legend>
+                                    <label class="wallet-deposit-field" for="new-bank-name">Název metody<input id="new-bank-name" name="name" type="text" placeholder="Např. Můj účet" maxlength="100" required></label>
+                                    <label class="wallet-deposit-field" for="new-bank-recipient_account_number">Číslo účtu příjemce<input id="new-bank-recipient_account_number" name="recipient_account_number" type="text" placeholder="Např. 19-2000145399" maxlength="34"></label>
+                                    <label class="wallet-deposit-field" for="new-bank-recipient_bank_code">Kód banky<input id="new-bank-recipient_bank_code" name="recipient_bank_code" type="text" placeholder="Např. 0800" maxlength="10"></label>
+                                    <label class="wallet-deposit-field" for="new-bank-recipient_iban">IBAN<input id="new-bank-recipient_iban" name="recipient_iban" type="text" placeholder="Např. CZ6508000000001920001453" maxlength="34"></label>
+                                    <label class="wallet-deposit-field" for="new-bank-recipient_bic">BIC / SWIFT<input id="new-bank-recipient_bic" name="recipient_bic" type="text" placeholder="Např. GIBACZPX" maxlength="11"></label>
+                                    <label class="wallet-deposit-field" for="new-bank-recipient_bank_name">Název banky příjemce<input id="new-bank-recipient_bank_name" name="recipient_bank_name" type="text" placeholder="Např. Česká spořitelna" maxlength="150"></label>
+                                    <label class="wallet-deposit-field" for="new-bank-recipient_bank_address">Adresa banky příjemce<input id="new-bank-recipient_bank_address" name="recipient_bank_address" type="text" placeholder="Ulice, město a stát" maxlength="255"></label>
+                                    <p class="wallet-deposit-message">Vyplňte IBAN nebo číslo účtu společně s kódem banky.</p>
+                                </fieldset>
+                                <label class="wallet-deposit-field" for="new-bank-amount">Částka<input id="new-bank-amount" name="amount" type="number" min="0.01" step="0.01" placeholder="0,00" required></label>
+                                <label class="wallet-deposit-field" for="new-bank-currency">Měna<select id="new-bank-currency" name="currency"><option value="CZK">CZK</option><option value="EUR">EUR</option></select></label>
+                                <label class="wallet-deposit-field" style="grid-column:1 / -1; display:flex; align-items:center; gap:10px; font-size:14px; cursor:pointer;"><input type="checkbox" name="save_method" checked> Uložit metodu pro příští vklady</label>
+                                <button class="wallet-deposit-submit" type="submit">Vložit</button>
+                                <p class="wallet-deposit-message" role="status" aria-live="polite"></p>
+                            </form>
+                        </details>
+
+                        <details class="wallet-method-collapse">
+                            <summary class="wallet-method-summary">
+                                <span class="wallet-method-icon" aria-hidden="true">CARD</span>
+                                <span class="wallet-method-summary-text">
+                                    <span class="wallet-method-summary-title">Platební karta</span>
+                                    <span class="wallet-method-summary-description">Nová platební karta</span>
+                                </span>
+                            </summary>
+                            <form class="wallet-deposit-form" data-method="card" data-new-method="true">
+                                <fieldset class="wallet-new-method-fields" style="grid-column:1 / -1; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; min-width:0; margin:0 0 4px; padding:16px; border:1px solid #26352D; border-radius:8px;">
+                                    <legend style="padding:0 8px; color:#C8F135; font-weight:600;">Údaje metody</legend>
+                                    <label class="wallet-deposit-field" for="new-card-name">Název metody<input id="new-card-name" name="name" type="text" placeholder="Např. Moje karta" maxlength="100" required></label>
+                                    <label class="wallet-deposit-field" for="new-card-card_holder_name">Jméno držitele<input id="new-card-card_holder_name" name="card_holder_name" type="text" placeholder="Jméno a příjmení" maxlength="100" autocomplete="cc-name" required></label>
+                                    <label class="wallet-deposit-field" for="new-card-card_number">Číslo karty<input id="new-card-card_number" name="card_number" type="text" placeholder="1234 5678 9012 3456" maxlength="23" inputmode="numeric" autocomplete="cc-number" pattern="[0-9 ]{12,23}" required></label>
+                                    <label class="wallet-deposit-field" for="new-card-card_expiry">Datum platnosti (MM/RR)<input id="new-card-card_expiry" name="card_expiry" type="text" placeholder="12/30" maxlength="5" inputmode="numeric" autocomplete="cc-exp" pattern="(0[1-9]|1[0-2])/[0-9]{2}" required></label>
+                                    <p class="wallet-deposit-message">CVV slouží pouze pro tuto ukázkovou platbu a neukládá se k platební metodě.</p>
+                                </fieldset>
+                                <label class="wallet-deposit-field" for="new-card-amount">Částka<input id="new-card-amount" name="amount" type="number" min="0.01" step="0.01" placeholder="0,00" required></label>
+                                <label class="wallet-deposit-field" for="new-card-currency">Měna<select id="new-card-currency" name="currency"><option value="CZK">CZK</option><option value="EUR">EUR</option></select></label>
+                                <label class="wallet-deposit-field" style="grid-column:1 / -1; display:flex; align-items:center; gap:10px; font-size:14px; cursor:pointer;"><input type="checkbox" name="save_method" checked> Uložit metodu pro příští vklady</label>
+                                <button class="wallet-deposit-submit" type="submit">Vložit</button>
+                                <p class="wallet-deposit-message" role="status" aria-live="polite"></p>
+                            </form>
+                        </details>
+
+                        <details class="wallet-method-collapse">
+                            <summary class="wallet-method-summary">
+                                <span class="wallet-method-icon" aria-hidden="true">BSC</span>
+                                <span class="wallet-method-summary-text">
+                                    <span class="wallet-method-summary-title">Krypto převod</span>
+                                    <span class="wallet-method-summary-description">Nová krypto peněženka · Síť BSC</span>
+                                </span>
+                            </summary>
+                            <form class="wallet-deposit-form" data-method="bsc" data-new-method="true">
+                                <fieldset class="wallet-new-method-fields" style="grid-column:1 / -1; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; min-width:0; margin:0 0 4px; padding:16px; border:1px solid #26352D; border-radius:8px;">
+                                    <legend style="padding:0 8px; color:#C8F135; font-weight:600;">Údaje metody</legend>
+                                    <label class="wallet-deposit-field" for="new-bsc-name">Název metody<input id="new-bsc-name" name="name" type="text" placeholder="Např. Moje BSC peněženka" maxlength="100" required></label>
+                                    <label class="wallet-deposit-field" for="new-bsc-recipient_crypto_address">Crypto adresa příjemce<input id="new-bsc-recipient_crypto_address" name="recipient_crypto_address" type="text" placeholder="0x…" maxlength="42" pattern="0x[a-fA-F0-9]{40}" spellcheck="false" required></label>
+                                    <p class="wallet-deposit-message">Síť: BSC (BEP-20).</p>
+                                </fieldset>
+                                <label class="wallet-deposit-field" for="new-bsc-amount">Částka<input id="new-bsc-amount" name="amount" type="number" min="0.01" step="0.01" placeholder="0,00" required></label>
+                                <label class="wallet-deposit-field" for="new-bsc-currency">Měna<select id="new-bsc-currency" name="currency"><option value="BSC">BSC</option></select></label>
+                                <label class="wallet-deposit-field" style="grid-column:1 / -1; display:flex; align-items:center; gap:10px; font-size:14px; cursor:pointer;"><input type="checkbox" name="save_method" checked> Uložit metodu pro příští vklady</label>
+                                <button class="wallet-deposit-submit" type="submit">Vložit</button>
+                                <p class="wallet-deposit-message" role="status" aria-live="polite"></p>
+                            </form>
+                        </details>
+                    </div>
+                </section>
+
+            </main>
+        </div>

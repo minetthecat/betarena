@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BET ARENA</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* Bet Aréna – design layout (tokeny z ART #1) */
+  :root {
+    --color-bg:#0D1411; --color-surface:#16201B; --color-surface-2:#1D2B24;
+    --color-line:#26352D; --color-text:#EEF3EF; --color-muted:#9DB0A5;
+    --color-accent:#C8F135; --color-accent-text:#0D1411; --color-odds:#FFB547;
+    --font-display:"Sora",sans-serif; --font-body:"Manrope",sans-serif;
+    --radius-pill:999px;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.5 var(--font-body); background:var(--color-bg); color:var(--color-text); min-height:100vh; display:flex; flex-direction:column; }
+  a { color:inherit; text-decoration:none; }
+  ul { list-style:none; margin:0; padding:0; }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible { outline:2px solid var(--color-accent); outline-offset:2px; }
+
+  /* Testovací panel (odlišený jantarovou čárkovanou linkou) */
+  .testbar { background:var(--color-surface); border-bottom:1px dashed var(--color-odds); padding:10px 24px; display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; font-size:13px; color:var(--color-muted); }
+  .testbar strong { letter-spacing:.08em; color:var(--color-odds); }
+  .testbar select, .testbar input { font:inherit; padding:6px 10px; border:1px solid var(--color-line); border-radius:8px; background:var(--color-bg); color:var(--color-text); }
+  .testbar input { min-width:240px; }
+
+  /* Header / navbar */
+  header.site { background:var(--color-bg); border-bottom:1px solid var(--color-line); }
+  .bar { max-width:1200px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px 36px; flex-wrap:wrap; min-height:76px; }
+  .bar-side { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .logo { font:700 24px var(--font-display); color:var(--color-accent); margin-right:20px; }
+  .nav-link { padding:10px 16px; border-radius:var(--radius-pill); font-size:15px; font-weight:600; }
+  .nav-link:hover { background:var(--color-surface); }
+  .nav-link.active { color:var(--color-accent); background:var(--color-surface); }
+  .btn { padding:12px 22px; border-radius:var(--radius-pill); font:600 15px var(--font-body); border:1px solid var(--color-line); background:transparent; color:var(--color-text); cursor:pointer; }
+  .btn:hover { border-color:var(--color-muted); }
+  .btn.primary { background:var(--color-accent); border-color:var(--color-accent); color:var(--color-accent-text); }
+  .btn.primary:hover { filter:brightness(1.08); }
+  .balance { padding:10px 16px; border:1px solid var(--color-line); border-radius:var(--radius-pill); background:var(--color-surface); font:600 15px var(--font-body); font-variant-numeric:tabular-nums; }
+
+  .dropdown { position:relative; }
+  .dropdown-menu { position:absolute; right:0; top:calc(100% + 8px); min-width:240px; background:var(--color-surface); border:1px solid var(--color-line); border-radius:16px; box-shadow:0 12px 32px rgba(0,0,0,.45); padding:8px 0; z-index:20; }
+  .dropdown-menu[hidden] { display:none; }
+  .dropdown-menu .section { font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--color-muted); padding:10px 20px 4px; }
+  .dropdown-menu a { display:block; padding:8px 20px; font-size:15px; }
+  .dropdown-menu a:hover { background:var(--color-surface-2); }
+  .dropdown-menu a.active { color:var(--color-accent); font-weight:600; }
+  .dropdown-menu hr { border:0; border-top:1px solid var(--color-line); margin:8px 0; }
+
+  /* Hlavička stránky */
+  .page-head { max-width:1200px; width:100%; margin:0 auto; padding:40px 24px 8px; }
+  .group-name { margin:0; font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:var(--color-accent); font-weight:600; }
+  .page-title { margin:6px 0 0; font:700 clamp(28px,4vw,44px)/1.1 var(--font-display); }
+  .url-path { margin:10px 0 0; font:13px ui-monospace,Menlo,Consolas,monospace; color:var(--color-muted); }
+
+  /* Podnavigace (pills jako filtry kasina) */
+  .subnav { max-width:1200px; width:100%; margin:16px auto 0; padding:0 24px; }
+  .subnav ul { display:flex; gap:10px; flex-wrap:wrap; }
+  .subnav a { display:block; padding:12px 22px; border:1px solid var(--color-line); border-radius:var(--radius-pill); color:var(--color-text); font:600 15px var(--font-body); }
+  .subnav a:hover { border-color:var(--color-muted); }
+  .subnav a.active { background:var(--color-accent); border-color:var(--color-accent); color:var(--color-accent-text); }
+  .subnav[hidden] { display:none; }
+
+  main { flex:1; max-width:1200px; width:100%; margin:0 auto; padding:32px 24px 56px; color:var(--color-muted); }
+
+  /* Footer */
+  footer.site { background:var(--color-bg); border-top:1px solid var(--color-line); }
+  .footer-cols { max-width:1200px; margin:0 auto; padding:40px 24px 32px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:24px 48px; }
+  .footer-cols h3 { margin:0 0 8px; font:700 15px var(--font-display); color:var(--color-text); }
+  .footer-cols a { display:inline-block; padding:6px 0; font-size:15px; color:var(--color-muted); }
+  .footer-cols a:hover, .footer-cols a.active { color:var(--color-accent); }
+  .copyright { width:min(1152px,100% - 48px); margin:0 auto 24px; padding-top:20px; border-top:1px solid var(--color-line); display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:14px; color:var(--color-muted); }
+  .age { padding:4px 10px; border:1px solid var(--color-line); border-radius:6px; font:600 12px var(--font-body); }
+</style>
+</head>
+<body>
+
+<div class="testbar" role="region" aria-label="Testovací panel">
+  <strong>TEST</strong>
+  <label>Uživatel
+    <select id="t-user">
+      <option value="guest">Nepřihlášený</option>
+      <option value="user">Přihlášený</option>
+      <option value="admin">Přihlášený (admin)</option>
+    </select>
+  </label>
+  <label>Stránka
+    <select id="t-page"></select>
+  </label>
+  <label>Vlastní URL
+    <input id="t-url" type="text" placeholder="/www/wallet/12" spellcheck="false">
+  </label>
+</div>
+
+<header class="site">
+  <div class="bar">
+    <nav class="bar-side" id="hdr-left" aria-label="Hlavní navigace"></nav>
+    <div class="bar-side" id="hdr-right"></div>
+  </div>
+</header>
+
+<div class="page-head">
+  <p class="group-name" id="group-name"></p>
+  <h1 class="page-title" id="page-title"></h1>
+  <p class="url-path" id="url-path"></p>
+</div>
+
+<nav class="subnav" id="subnav" aria-label="Podnavigace" hidden></nav>
+
+<main>Obsah stránky.</main>
+
+<footer class="site">
+  <div class="footer-cols" id="footer-cols"></div>
+  <div class="copyright"><span>&copy; BET ARENA</span><span class="age">18+</span></div>
+</footer>
+
+<script>
+/* ------------------------------------------------------------------
+   DATA (podle ## Navigations a ## Sitemap v SITEMAP.md)
+------------------------------------------------------------------ */
+const BASE = '/www';
+
+/* Routy: statické mají přednost před dynamickými (:param). */
+const ROUTES = [
+  // Hlavní
+  { path:'/',                      title:'Hlavní stránka',        group:'Hlavní', access:'public' },
+  { path:'/terms',                 title:'Obecné podmínky',       group:'Hlavní', access:'public' },
+  { path:'/contact',               title:'Kontakty',              group:'Hlavní', access:'public' },
+  { path:'/404',                   title:'Chyba 404',             group:'Hlavní', access:'public' },
+  // Kasino
+  { path:'/casino/',               title:'Kasino',                group:'Kasino', access:'public' },
+  { path:'/casino/games/',         title:'Přehled her',           group:'Kasino', access:'public' },
+  { path:'/casino/games/popular',  title:'Populární hry',         group:'Kasino', access:'public' },
+  { path:'/casino/games/favorites',title:'Oblíbené hry',          group:'Kasino', access:'user' },
+  { path:'/casino/games/all',      title:'Všechny hry',           group:'Kasino', access:'public' },
+  { path:'/casino/games/synot',    title:'Hry dle poskytovatele', group:'Kasino', access:'public' },
+  { path:'/casino/game/:id',       title:'Detail hry',            group:'Kasino', access:'public' },
+  // Účet (auth)
+  { path:'/auth/login',            title:'Přihlášení',            group:'Účet', access:'guest' },
+  { path:'/auth/register',         title:'Registrace',            group:'Účet', access:'guest' },
+  { path:'/auth/logout',           title:'Odhlášení',             group:'Účet', access:'user' },
+  { path:'/auth/forgot-password',  title:'Žádost o obnovení hesla', group:'Účet', access:'public' },
+  { path:'/auth/reset-password/:token', title:'Nastavení nového hesla', group:'Účet', access:'public' },
+  { path:'/auth/verify/:token',    title:'Ověření e-mailové adresy', group:'Účet', access:'public' },
+  // Můj účet
+  { path:'/account/',              title:'Přehled účtu',          group:'Můj účet', access:'user' },
+  { path:'/account/profile',       title:'Osobní údaje',          group:'Můj účet', access:'user' },
+  { path:'/account/kyc',           title:'Verifikace účtu',       group:'Můj účet', access:'user' },
+  { path:'/account/settings',      title:'Nastavení účtu',        group:'Můj účet', access:'user' },
+  { path:'/account/tournaments',   title:'Turnaje uživatele',     group:'Můj účet', access:'user' },
+  { path:'/account/bonuses',       title:'Bonusy uživatele',      group:'Můj účet', access:'user' },
+  // Peněženka
+  { path:'/wallet/',               title:'Přehled financí a peněženek', group:'Peněženka', access:'user' },
+  { path:'/wallet/method',         title:'Platební metody',       group:'Peněženka', access:'user' },
+  { path:'/wallet/deposit',        title:'Vklad',                 group:'Peněženka', access:'user' },
+  { path:'/wallet/withdraw',       title:'Výběr',                 group:'Peněženka', access:'user' },
+  { path:'/wallet/:id',            title:'Detail peněženky',      group:'Peněženka', access:'user' },
+  // Transakce
+  { path:'/transactions/',         title:'Přehled transakcí',     group:'Transakce', access:'user' },
+  { path:'/transactions/:id',      title:'Detail transakce',      group:'Transakce', access:'user' },
+  // Bonusy
+  { path:'/bonuses/',              title:'Přehled bonusů',        group:'Bonusy', access:'public' },
+  { path:'/bonus/:id',             title:'Detail bonusu',         group:'Bonusy', access:'public' },
+  // Turnaje
+  { path:'/tournaments/',          title:'Přehled turnajů',       group:'Turnaje', access:'public' },
+  { path:'/tournaments/active',    title:'Aktivní turnaje',       group:'Turnaje', access:'public' },
+  { path:'/tournaments/upcoming',  title:'Připravované turnaje',  group:'Turnaje', access:'public' },
+  { path:'/tournaments/finished',  title:'Ukončené turnaje',      group:'Turnaje', access:'public' },
+  { path:'/tournament/:id',        title:'Detail turnaje',        group:'Turnaje', access:'public' },
+  // Administrace
+  { path:'/admin/',                title:'Přehled (nástěnka)',    group:'Administrace', access:'admin' },
+];
+
+/* Přístup: public = kdokoli, guest = jen nepřihlášený, user = jen přihlášený, admin = jen role admin */
+const ACCESS_LABEL = { public:'Veřejné', guest:'Nepřihlášený', user:'Přihlášený', admin:'Admin' };
+
+/* Header – levá strana (stejná pro přihlášené i nepřihlášené) */
+const HEADER_LEFT = [
+  { label:'Kasino',  href:'/casino/',      match:['/casino'] },
+  { label:'Turnaje', href:'/tournaments/', match:['/tournaments','/tournament'] },
+  { label:'Bonusy',  href:'/bonuses/',     match:['/bonuses','/bonus'] },
+];
+
+/* Header – uživatelské menu (dropdown) */
+const USER_MENU = [
+  { section:'Účet', items:[
+    { label:'Přehled účtu',   href:'/account/' },
+    { label:'Osobní údaje',   href:'/account/profile' },
+    { label:'Verifikace účtu',href:'/account/kyc' },
+    { label:'Nastavení',      href:'/account/settings' },
+  ]},
+  { section:'Moje aktivity', items:[
+    { label:'Moje turnaje',   href:'/account/tournaments' },
+    { label:'Moje bonusy',    href:'/account/bonuses' },
+  ]},
+  { section:'Finance', items:[
+    { label:'Peněženka',      href:'/wallet/' },
+    { label:'Výběr',          href:'/wallet/withdraw' },
+    { label:'Transakce',      href:'/transactions/' },
+  ]},
+  { section:'Správa', admin:true, items:[
+    { label:'Administrace',   href:'/admin/' },
+  ]},
+];
+
+/* Subnavigace (filtry) – zobrazí se na hlavní stránce skupiny a jejích filtrech */
+const SUBNAVS = [
+  { prefix:'/casino/games', items:[
+    { label:'Populární',        href:'/casino/games/popular' },
+    { label:'Oblíbené',         href:'/casino/games/favorites', logged:true },
+    { label:'Všechny',          href:'/casino/games/all' },
+    { label:'Dle poskytovatele',href:'/casino/games/synot' },
+  ]},
+  { prefix:'/tournaments', items:[
+    { label:'Aktivní',      href:'/tournaments/active' },
+    { label:'Připravované', href:'/tournaments/upcoming' },
+    { label:'Ukončené',     href:'/tournaments/finished' },
+  ]},
+  { prefix:'/wallet', items:[
+    { label:'Přehled',          href:'/wallet/' },
+    { label:'Platební metody',  href:'/wallet/method' },
+    { label:'Vklad',            href:'/wallet/deposit' },
+    { label:'Výběr',            href:'/wallet/withdraw' },
+  ]},
+];
+
+/* Footer */
+const FOOTER_INFO = { title:'Informace', items:[
+  { label:'Obecné podmínky', href:'/terms' },
+  { label:'Kontakty',        href:'/contact' },
+]};
+const FOOTER = {
+  user: [
+    { title:'Kasino', items:[
+      { label:'Všechny hry',    href:'/casino/games/all' },
+      { label:'Populární hry',  href:'/casino/games/popular' },
+      { label:'Oblíbené hry',   href:'/casino/games/favorites' },
+      { label:'Turnaje',        href:'/tournaments/' },
+      { label:'Bonusy',         href:'/bonuses/' },
+    ]},
+    { title:'Můj účet', items:[
+      { label:'Přehled účtu',   href:'/account/' },
+      { label:'Peněženka',      href:'/wallet/' },
+      { label:'Transakce',      href:'/transactions/' },
+      { label:'Nastavení',      href:'/account/settings' },
+    ]},
+    FOOTER_INFO,
+  ],
+  guest: [
+    { title:'Kasino', items:[
+      { label:'Všechny hry',    href:'/casino/games/all' },
+      { label:'Populární hry',  href:'/casino/games/popular' },
+      { label:'Turnaje',        href:'/tournaments/' },
+      { label:'Bonusy',         href:'/bonuses/' },
+    ]},
+    { title:'Účet', items:[
+      { label:'Přihlásit se',   href:'/auth/login' },
+      { label:'Registrovat se', href:'/auth/register' },
+      { label:'Zapomenuté heslo', href:'/auth/forgot-password' },
+    ]},
+    FOOTER_INFO,
+  ],
+};
+
+/* ------------------------------------------------------------------
+   POMOCNÉ FUNKCE
+------------------------------------------------------------------ */
+const state = { user:'guest', path:'/', redirectedFrom:null };   // path = adresa bez BASE (/www)
+
+const $ = id => document.getElementById(id);
+const norm = p => (p.replace(/\/+$/, '') || '/');
+const isLogged = () => state.user !== 'guest';
+
+/* Najde routu pro adresu. Vrací { route, params } nebo 404. */
+function resolve(path) {
+  const p = norm(path);
+  for (const r of ROUTES) {
+    const rp = norm(r.path);
+    if (!rp.includes(':')) { if (rp === p) return { route:r, params:{} }; }
+  }
+  for (const r of ROUTES) {
+    const rp = norm(r.path);
+    if (!rp.includes(':')) continue;
+    const a = rp.split('/'), b = p.split('/');
+    if (a.length !== b.length) continue;
+    const params = {};
+    const ok = a.every((seg, i) => seg.startsWith(':') ? (params[seg.slice(1)] = decodeURIComponent(b[i])) !== '' : seg === b[i]);
+    if (ok) return { route:r, params };
+  }
+  return { route: ROUTES.find(r => r.path === '/404'), params:{}, notFound:true };
+}
+
+/* Zdrojová adresa pro testování: #hash má přednost, jinak location.pathname. */
+function readLocation() {
+  let raw = location.hash.replace(/^#/, '');
+  if (!raw && location.pathname.startsWith(BASE)) raw = location.pathname;
+  if (!raw) raw = BASE + '/';
+  const [pathPart, query] = raw.split('?');
+  const params = new URLSearchParams(query || '');
+  let p = pathPart.startsWith(BASE) ? pathPart.slice(BASE.length) : pathPart;
+  state.path = p || '/';
+  state.redirectedFrom = null;
+  if (params.has('user')) state.user = params.get('user');
+}
+
+const hashFor = path => BASE + path + (state.user !== 'guest' ? '?user=' + state.user : '');
+
+function go(path) {
+  location.hash = hashFor(path);
+}
+
+/* Kontrola přístupu. Vrací cílovou adresu přesměrování, nebo null. */
+function guard(res) {
+  const a = res.route.access;
+  if (a === 'guest' && isLogged()) return '/';                              // přihlášený na login/register → /www/
+  if ((a === 'user' || a === 'admin') && !isLogged()) return '/auth/login'; // nepřihlášený na chráněné stránce → login
+  if (a === 'admin' && state.user !== 'admin') return '/404';              // přihlášený bez role admin → 404
+  return null;
+}
+
+const isActiveHref = href => norm(href) === norm(state.path);
+function link(item, cls = '') {
+  const a = document.createElement('a');
+  a.href = BASE + item.href;
+  a.dataset.go = item.href;
+  a.textContent = item.label;
+  if (cls) a.className = cls;
+  if (isActiveHref(item.href)) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
+  return a;
+}
+
+/* ------------------------------------------------------------------
+   RENDER
+------------------------------------------------------------------ */
+function renderTitles(res) {
+  let title = res.route.title;
+  const idVal = res.params.id || res.params.token;
+  if (idVal) title += ' #' + idVal;
+  $('group-name').textContent = res.route.group;
+  $('page-title').textContent = title;
+  let info = BASE + state.path + '  ·  Přístup: ' + ACCESS_LABEL[res.route.access];
+  if (res.notFound) info += '  ·  (nenalezeno → 404)';
+  if (state.redirectedFrom) info += '  ·  přesměrováno z ' + BASE + state.redirectedFrom;
+  $('url-path').textContent = info;
+  document.title = title + ' · ' + res.route.group + ' · BET ARENA';
+}
+
+function renderHeader() {
+  const left = $('hdr-left');
+  left.replaceChildren();
+  const logo = link({ label:'BET ARENA', href:'/' }, 'logo');
+  logo.classList.remove('active');
+  left.append(logo);
+  for (const it of HEADER_LEFT) {
+    const a = link(it, 'nav-link');
+    a.classList.toggle('active', it.match.some(m => state.path === m || state.path.startsWith(m + '/')));
+    left.append(a);
+  }
+
+  const right = $('hdr-right');
+  right.replaceChildren();
+  if (!isLogged()) {
+    right.append(link({ label:'Přihlásit se', href:'/auth/login' }, 'btn'),
+                 link({ label:'Registrovat se', href:'/auth/register' }, 'btn primary'));
+    return;
+  }
+  const bal = link({ label:'1 250,00 Kč', href:'/wallet/' }, 'balance');
+  bal.title = 'Zůstatek (součet peněženek)';
+  right.append(bal, link({ label:'Vklad', href:'/wallet/deposit' }, 'btn primary'));
+
+  const dd = document.createElement('div');
+  dd.className = 'dropdown';
+  const btn = document.createElement('button');
+  btn.className = 'btn';
+  btn.setAttribute('aria-expanded', 'false');
+  btn.textContent = (state.user === 'admin' ? 'Admin' : 'Uživatel') + ' ▾';
+  const menu = document.createElement('div');
+  menu.className = 'dropdown-menu';
+  menu.hidden = true;
+  for (const sec of USER_MENU) {
+    if (sec.admin && state.user !== 'admin') continue;
+    const h = document.createElement('div'); h.className = 'section'; h.textContent = sec.section;
+    menu.append(h);
+    sec.items.forEach(i => menu.append(link(i)));
+    menu.append(document.createElement('hr'));
+  }
+  menu.append(link({ label:'Odhlásit se', href:'/auth/logout' }));
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    menu.hidden = !menu.hidden;
+    btn.setAttribute('aria-expanded', String(!menu.hidden));
+  });
+  dd.append(btn, menu);
+  right.append(dd);
+}
+
+function renderSubnav() {
+  const nav = $('subnav');
+  const cfg = SUBNAVS.find(s => state.path === s.prefix || state.path.startsWith(s.prefix + '/'));
+  nav.replaceChildren();
+  if (!cfg) { nav.hidden = true; return; }
+  const ul = document.createElement('ul');
+  cfg.items.filter(i => !i.logged || isLogged()).forEach(i => {
+    const li = document.createElement('li');
+    li.append(link(i));
+    ul.append(li);
+  });
+  nav.append(ul);
+  nav.hidden = false;
+}
+
+function renderFooter() {
+  const box = $('footer-cols');
+  box.replaceChildren();
+  for (const col of FOOTER[isLogged() ? 'user' : 'guest']) {
+    const div = document.createElement('div');
+    const h = document.createElement('h3'); h.textContent = col.title;
+    const ul = document.createElement('ul');
+    col.items.forEach(i => { const li = document.createElement('li'); li.append(link(i)); ul.append(li); });
+    div.append(h, ul);
+    box.append(div);
+  }
+}
+
+function renderTestbar() {
+  $('t-user').value = state.user;
+  const sel = $('t-page');
+  if (!sel.options.length) {
+    ROUTES.forEach(r => {
+      const o = document.createElement('option');
+      o.value = r.path.replace(':id', '1').replace(':token', 'abc123');
+      o.textContent = BASE + r.path + '  ·  ' + ACCESS_LABEL[r.access];
+      sel.append(o);
+    });
+    const custom = document.createElement('option');
+    custom.value = ''; custom.textContent = '— vlastní —';
+    sel.prepend(custom);
+  }
+  const match = [...sel.options].find(o => o.value && norm(o.value) === norm(state.path));
+  sel.value = match ? match.value : '';
+  $('t-url').value = BASE + state.path;
+}
+
+function render() {
+  let res = resolve(state.path);
+  const target = guard(res);
+  if (target) {
+    state.redirectedFrom = state.path;
+    state.path = target;
+    res = resolve(target);
+    try { history.replaceState(null, '', '#' + hashFor(target)); } catch (e) { /* file:// může replaceState odmítnout */ }
+  }
+  renderTitles(res);
+  renderHeader();
+  renderSubnav();
+  renderFooter();
+  renderTestbar();
+}
+
+/* ------------------------------------------------------------------
+   UDÁLOSTI
+------------------------------------------------------------------ */
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[data-go]');
+  if (a) { e.preventDefault(); go(a.dataset.go); return; }
+  document.querySelectorAll('.dropdown-menu').forEach(m => { m.hidden = true; });
+});
+
+$('t-user').addEventListener('change', e => { state.user = e.target.value; go(state.path); });
+$('t-page').addEventListener('change', e => { if (e.target.value) go(e.target.value); });
+$('t-url').addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  let v = e.target.value.trim();
+  if (v.startsWith(BASE)) v = v.slice(BASE.length);
+  go(v.startsWith('/') ? v : '/' + v);
+});
+window.addEventListener('hashchange', () => { readLocation(); render(); });
+
+readLocation();
+render();
+</script>
+</body>
+</html>
